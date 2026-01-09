@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform("io.cucumber:cucumber-bom:7.18.1")
+    testImplementation "io.cucumber:cucumber-java"
+    testImplementation "io.cucumber:cucumber-junit-platform-engine"
+
+    testImplementation "org.junit.platform:junit-platform-suite:1.10.2"
+
+    testImplementation "io.rest-assured:rest-assured:5.4.0"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.17.2"
+
+    testImplementation "org.seleniumhq.selenium:selenium-java:4.23.0"
+    testImplementation "io.github.bonigarcia:webdrivermanager:5.9.2"
+
+    testImplementation "org.assertj:assertj-core:3.26.3"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register('apiTest', Test) {
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+
+    systemProperty "cucumber.filter.tags", "@api"
+    systemProperty "cucumber.glue", "com.bagas.finalproject.api.steps"
+    systemProperty "cucumber.plugin",
+            "pretty," +
+                    "html:build/reports/cucumber/api/cucumber.html," +
+                    "json:build/reports/cucumber/api/cucumber.json"
+}
+
+tasks.register('webTest', Test) {
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+
+    systemProperty "cucumber.filter.tags", "@web"
+    systemProperty "cucumber.glue", "com.bagas.finalproject.web.steps"
+    systemProperty "cucumber.plugin",
+            "pretty," +
+                    "html:build/reports/cucumber/web/cucumber.html," +
+                    "json:build/reports/cucumber/web/cucumber.json"
+}
