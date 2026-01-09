@@ -3,6 +3,8 @@ name: Automation Tests
 on:
   workflow_dispatch:
   pull_request:
+  push:
+    branches: [ "master" ]
 
 jobs:
   test:
@@ -16,7 +18,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: '17'
           cache: gradle
 
       - name: Make Gradle wrapper executable
@@ -27,3 +29,17 @@ jobs:
 
       - name: Run Web Tests
         run: ./gradlew webTest
+
+      - name: Upload Cucumber Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-reports
+          path: build/reports/cucumber/**
+
+      - name: Upload Gradle Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-test-reports
+          path: build/reports/tests/**

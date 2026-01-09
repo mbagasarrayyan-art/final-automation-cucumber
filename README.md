@@ -1,29 +1,38 @@
-# Final Automation Test Framework
+# final-automation-cucumber (API + Web)
 
-Automation test framework using **Selenium**, **Rest Assured**, **Cucumber**, **Gradle**, and **GitHub Actions**.
-
-## Tech Stack
+Automation test framework using:
 - Java
 - Gradle
-- Selenium WebDriver
-- Rest Assured
-- Cucumber (Gherkin)
-- GitHub Actions
+- Cucumber (Gherkin) + JUnit Platform
+- Rest Assured (API)
+- Selenium WebDriver (Web UI)
+- GitHub Actions (CI)
 
-## How to Run Test
+## Project Structure
+- `src/test/java/com/bagas/finalproject/api`  
+  API automation (client, steps, runner)
+- `src/test/java/com/bagas/finalproject/web`  
+  Web UI automation (pages, steps, runner)
+- `src/test/resources/features/api`  
+  API feature files tagged `@api`
+- `src/test/resources/features/web`  
+  Web feature files tagged `@web`
 
-### Run API Tests
+## How to Run (Local)
+
+### Run API tests only
 ```bash
-./gradlew apiTest
+./gradlew clean apiTest
 ```
 
-### Run Web UI Tests
+### Run Web tests only
 ```bash
-./gradlew webTest
+./gradlew clean webTest
 ```
 
-## Test Report
-After execution, Cucumber reports will be generated at:
+## Reports (Generated Locally)
+
+After running tests, Cucumber reports will be generated:
 
 ### API Reports
 - HTML: `build/reports/cucumber/api/cucumber.html`
@@ -33,7 +42,10 @@ After execution, Cucumber reports will be generated at:
 - HTML: `build/reports/cucumber/web/cucumber.html`
 - JSON: `build/reports/cucumber/web/cucumber.json`
 
-## CI/CD
-GitHub Actions workflow runs:
-- Manual trigger
+## CI (GitHub Actions)
+Workflow runs:
+- Manual trigger (workflow_dispatch)
 - On every Pull Request
+
+Workflow file:
+- `.github/workflows/automation-tests.yml`
