@@ -2,6 +2,9 @@ plugins {
     id 'java'
 }
 
+group = 'com.bagas'
+version = '1.0-SNAPSHOT'
+
 repositories {
     mavenCentral()
 }
@@ -26,8 +29,13 @@ test {
     useJUnitPlatform()
 }
 
+
 tasks.register('apiTest', Test) {
     useJUnitPlatform()
+
+
+    include '**/ApiTestRunner.class'
+
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
 
@@ -39,8 +47,13 @@ tasks.register('apiTest', Test) {
                     "json:build/reports/cucumber/api/cucumber.json"
 }
 
+
 tasks.register('webTest', Test) {
     useJUnitPlatform()
+
+
+    include '**/WebTestRunner.class'
+
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
 
