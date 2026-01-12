@@ -1,107 +1,80 @@
-## **Final Automation Test – Web & API**
+# FINAL AUTOMATION TEST – WEB & API
 
-Project ini adalah final project automation testing menggunakan Java dan Gradle.
-Automation test mencakup Web UI dan API dalam satu repository.
+Project ini merupakan final project automation testing yang dibuat menggunakan Java dan Gradle.  
+Automation test mencakup Web UI testing dan API testing dalam satu repository sebagai portfolio QA Automation.
 
-**Tools dan teknologi yang digunakan:**
-- Java
-- Gradle
-- Selenium WebDriver
-- Cucumber (Gherkin)
-- Rest Assured
-- Allure Report
-- GitHub Actions
+---
 
-**Target pengujian:**
-- Web UI: https://www.saucedemo.com/
-- API: https://dummyapi.io/docs
+## Tools yang Digunakan
+Java, Gradle, Selenium WebDriver, Cucumber (Gherkin), Rest Assured, dan GitHub Actions.
 
---------------------------------------------------
+---
 
-## **Struktur Project:**
+## Target Pengujian
+Web UI menggunakan website https://www.saucedemo.com/  
+API menggunakan public API https://dummyapi.io/docs
 
-src/test/java
-- api
-  - client
-  - runner
-  - steps
-- web
-  - pages
-  - runner
-  - steps
-  - utils
+---
 
-src/test/resources/features
-- api
-- web
+## Skenario Automation Test
 
---------------------------------------------------
+### Web Automation Test
+Pengujian web mencakup:
+- Login berhasil
+- Login gagal (negative test)
+- Menambahkan product ke cart
+- Menghapus product dari cart
+- End to End checkout sampai berhasil
 
-## **Skenario Test yang Dibuat**
+### API Automation Test
+Pengujian API mencakup:
+- Get list user
+- Create user
+- Update user
+- Delete user
+- Get list tag
+- Negative test dengan user ID tidak valid
 
-**Web Automation Test:**
-1. Login berhasil
-2. Login gagal (negative test)
-3. Add product ke cart
-4. Remove product dari cart
-5. End to End checkout sampai sukses
+---
 
-**API Automation Test:**
-1. Get list user
-2. Create user
-3. Update user
-4. Delete user
-5. Get list tag
-6. Negative test: get user dengan id tidak valid
+## Cara Menjalankan Automation Test
 
---------------------------------------------------
+### Menjalankan Web Test (Headless)
+Untuk menjalankan web automation test dalam mode headless:
 
-## **Cara Menjalankan Test (Local)**
+Windows (PowerShell):
+$env:HEADLESS="true"  
+./gradlew clean webTest  
 
-**Web Test (Headless):**
+Mac / Linux:
+HEADLESS=true ./gradlew clean webTest  
 
-**Windows PowerShell:**
-$env:HEADLESS="true"
-./gradlew clean webTest
-
-**Mac / Linux:**
-HEADLESS=true ./gradlew clean webTest
-
-**API Test:**
+### Menjalankan API Test
 ./gradlew clean apiTest
 
---------------------------------------------------
+---
 
-## **Report**
+## Report
+Project ini menggunakan Cucumber HTML Report.
 
-Cucumber Report:
-- Web: build/reports/cucumber/web/cucumber.html
-- API: build/reports/cucumber/api/cucumber.html
+Setelah test dijalankan, report dapat diakses melalui browser pada:
+- Web Test: build/reports/cucumber/web/cucumber.html
+- API Test: build/reports/cucumber/api/cucumber.html
 
-Allure Report:
-Generate report:
-./gradlew allureReport
+---
 
-Open report:
-./gradlew allureServe
+## GitHub Actions
+Project ini menggunakan GitHub Actions sebagai pipeline automation.
 
---------------------------------------------------
-
-## **GitHub Actions**
-
-Project ini memiliki GitHub Actions workflow yang akan berjalan:
-- Saat Pull Request ke branch main
-- Saat push ke branch main
+Pipeline akan berjalan saat:
+- Push ke branch main
+- Pull Request ke branch main
 - Manual trigger
 
-Workflow akan menjalankan:
-- API automation test
-- Web automation test (headless)
+Pipeline menjalankan web automation test dan API automation test secara otomatis.
 
-Report akan di-upload sebagai artifact dan dapat di-download melalui tab Actions di GitHub.
+---
 
---------------------------------------------------
-
-Catatan:
-- Web test dijalankan dalam mode headless pada CI
-- Project ini dibuat sebagai portfolio automation testing
+## Catatan
+Web automation dijalankan dalam mode headless pada CI.  
+Project ini dibuat sebagai portfolio automation testing.
