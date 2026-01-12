@@ -1,9 +1,9 @@
-Final Automation Test – Web & API
+## **Final Automation Test – Web & API**
 
 Project ini adalah final project automation testing menggunakan Java dan Gradle.
 Automation test mencakup Web UI dan API dalam satu repository.
 
-Tools dan teknologi yang digunakan:
+**Tools dan teknologi yang digunakan:**
 - Java
 - Gradle
 - Selenium WebDriver
@@ -12,13 +12,13 @@ Tools dan teknologi yang digunakan:
 - Allure Report
 - GitHub Actions
 
-Target pengujian:
+**Target pengujian:**
 - Web UI: https://www.saucedemo.com/
 - API: https://dummyapi.io/docs
 
 --------------------------------------------------
 
-Struktur Project:
+## **Struktur Project:**
 
 src/test/java
 - api
@@ -37,16 +37,16 @@ src/test/resources/features
 
 --------------------------------------------------
 
-Skenario Test yang Dibuat
+## **Skenario Test yang Dibuat**
 
-Web Automation Test:
+**Web Automation Test:**
 1. Login berhasil
 2. Login gagal (negative test)
 3. Add product ke cart
 4. Remove product dari cart
 5. End to End checkout sampai sukses
 
-API Automation Test:
+**API Automation Test:**
 1. Get list user
 2. Create user
 3. Update user
@@ -56,23 +56,23 @@ API Automation Test:
 
 --------------------------------------------------
 
-Cara Menjalankan Test (Local)
+## **Cara Menjalankan Test (Local)**
 
-Web Test (Headless):
+**Web Test (Headless):**
 
-Windows PowerShell:
+**Windows PowerShell:**
 $env:HEADLESS="true"
 ./gradlew clean webTest
 
-Mac / Linux:
+**Mac / Linux:**
 HEADLESS=true ./gradlew clean webTest
 
-API Test:
+**API Test:**
 ./gradlew clean apiTest
 
 --------------------------------------------------
 
-Report
+## **Report**
 
 Cucumber Report:
 - Web: build/reports/cucumber/web/cucumber.html
@@ -87,7 +87,7 @@ Open report:
 
 --------------------------------------------------
 
-GitHub Actions
+## **GitHub Actions**
 
 Project ini memiliki GitHub Actions workflow yang akan berjalan:
 - Saat Pull Request ke branch main
