@@ -2,9 +2,6 @@ plugins {
     id 'java'
 }
 
-group = 'com.bagas'
-version = '1.0-SNAPSHOT'
-
 repositories {
     mavenCentral()
 }
@@ -15,6 +12,10 @@ dependencies {
     testImplementation "io.cucumber:cucumber-junit-platform-engine"
 
     testImplementation "org.junit.platform:junit-platform-suite:1.10.2"
+
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.2"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.2"
 
     testImplementation "io.rest-assured:rest-assured:5.4.0"
     testImplementation "com.fasterxml.jackson.core:jackson-databind:2.17.2"
@@ -29,38 +30,18 @@ test {
     useJUnitPlatform()
 }
 
-
 tasks.register('apiTest', Test) {
     useJUnitPlatform()
-
-
-    include '**/ApiTestRunner.class'
-
-    testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
-
-    systemProperty "cucumber.filter.tags", "@api"
-    systemProperty "cucumber.glue", "com.bagas.finalproject.api.steps"
-    systemProperty "cucumber.plugin",
-            "pretty," +
-                    "html:build/reports/cucumber/api/cucumber.html," +
-                    "json:build/reports/cucumber/api/cucumber.json"
+    include("**/ApiTestRunner.class")
+    testLogging {
+        events "passed", "failed", "skipped"
+    }
 }
-
 
 tasks.register('webTest', Test) {
     useJUnitPlatform()
-
-
-    include '**/WebTestRunner.class'
-
-    testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
-
-    systemProperty "cucumber.filter.tags", "@web"
-    systemProperty "cucumber.glue", "com.bagas.finalproject.web.steps"
-    systemProperty "cucumber.plugin",
-            "pretty," +
-                    "html:build/reports/cucumber/web/cucumber.html," +
-                    "json:build/reports/cucumber/web/cucumber.json"
+    include("**/WebTestRunner.class")
+    testLogging {
+        events "passed", "failed", "skipped"
+    }
 }

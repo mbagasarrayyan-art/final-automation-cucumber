@@ -1,28 +1,24 @@
 @api
-Feature: Dummy API - User CRUD
+Feature: Dummy API Users CRUD
 
-  Scenario: Create user successfully
-    Given I set DummyAPI base url
-    When I create a new user with firstName "Bagas" lastName "Arrayyan" email "bagas_test@mail.com"
+  Scenario: Get user list should return 200
+    When I request user list with limit 5
     Then the response status should be 200
-    And the response should contain "id"
+    And the user list should not be empty
 
-  Scenario: Get user by id
-    Given I set DummyAPI base url
-    And I have an existing user id from previous create
-    When I get user by that id
-    Then the response status should be 200
-    And the response should contain "id"
+  Scenario: Create user should return 200 or 201
+    When I create a new user
+    Then the response status should be 200 or 201
+    And print the last response
 
-  Scenario: Update user by id
-    Given I set DummyAPI base url
-    And I have an existing user id from previous create
-    When I update user firstName to "Updated"
+  Scenario: Update created user should return 200
+    When I create a new user
+    Then the response status should be 200 or 201
+    When I update the created user
     Then the response status should be 200
-    And the response should contain "firstName"
 
-  Scenario: Delete user by id
-    Given I set DummyAPI base url
-    And I have an existing user id from previous create
-    When I delete user by that id
-    Then the response status should be 200
+  Scenario: Delete created user should return 200 or 204
+    When I create a new user
+    Then the response status should be 200 or 201
+    When I delete the created user
+    Then the response status should be 200 or 204

@@ -1,7 +1,7 @@
 @api
-Feature: Dummy API - Tags
+Feature: Dummy API Tags
 
-  Scenario: Get list of tags
-    Given I set DummyAPI base url
-    When I get list of tags
+  Scenario: Get list of tags should return 200
+    When I request tags list
     Then the response status should be 200
+    And the tags list should not be empty
