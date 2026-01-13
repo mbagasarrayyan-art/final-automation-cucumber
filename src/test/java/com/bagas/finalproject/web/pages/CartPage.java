@@ -22,7 +22,7 @@ public class CartPage {
 
     public boolean isLoaded() {
         try {
-            wait.visible(cartList); // ✅ nunggu tampil, bukan cek sekali
+            wait.visible(cartList); 
             return true;
         } catch (TimeoutException e) {
             return false;
