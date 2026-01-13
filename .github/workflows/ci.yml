@@ -11,15 +11,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
           cache: gradle
+
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -29,16 +34,13 @@ jobs:
           APP_ID: 63a804408eb0cb069b57e43a
         run: ./gradlew clean apiTest
 
-      - name: Run Web Tests (Xvfb)
+      - name: Run Web Tests (xvfb)
         run: xvfb-run -a ./gradlew clean webTest
 
-      - name: Upload Cucumber Reports (HTML & JSON)
+      - name: Upload Cucumber Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-reports
-          path: |
-            build/reports/cucumber/*.html
-            build/reports/cucumber/*.json
-            build/reports/tests/**/*
+          path: build/reports/cucumber/*
           if-no-files-found: warn
