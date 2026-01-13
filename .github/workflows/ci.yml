@@ -1,68 +1,57 @@
-name: CI - API & Web Automation
+name: CI
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
+  pull_request:
 
 jobs:
-  api-test:
-    name: Run API Automation Tests
+  api:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
 
       - name: Run API Tests
         run: ./gradlew clean apiTest
 
-      - name: Upload API Cucumber Report
+      - name: Upload API Test Report (JUnit)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: api-cucumber-report
-          path: build/reports/cucumber/api.html
+          name: api-test-report
+          path: build/reports/tests/apiTest
 
-
-  web-test:
-    name: Run Web Automation Tests
+  web:
     runs-on: ubuntu-latest
-    needs: api-test
-    continue-on-error: true   # 🔴 PENTING: web boleh fail, pipeline tetap hijau
-
+    needs: api
+    env:
+      HEADLESS: "true"
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      # Chrome sudah ada di ubuntu-latest biasanya, tapi step ini bikin lebih stabil
+      - name: Check Chrome Version
+        run: google-chrome --version || chromium-browser --version || true
 
-      - name: Run Web Tests (Headless)
-        env:
-          HEADLESS: "true"
+      - name: Run Web Tests
         run: ./gradlew clean webTest
 
-      - name: Upload Web Cucumber Report
+      - name: Upload Web Test Report (JUnit)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: web-cucumber-report
-          path: build/reports/cucumber/web.html
+          name: web-test-report
+          path: build/reports/tests/webTest
