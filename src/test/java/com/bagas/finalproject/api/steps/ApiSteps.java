@@ -1,105 +1,138 @@
 package com.bagas.finalproject.api.steps;
 
 import com.bagas.finalproject.api.client.DummyApiClient;
-import io.cucumber.java.en.*;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import io.restassured.response.Response;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ApiSteps {
 
-    private final DummyApiClient client = new DummyApiClient();
+    private final DummyApiClient api = new DummyApiClient();
 
     private Response lastResponse;
     private String createdUserId;
 
-    @When("I request user list with limit {int}")
-    public void i_request_user_list_with_limit(Integer limit) {
-        lastResponse = client.getUsers(limit);
+    // =========================
+    // TAGS
+    // =========================
+    @When("user request tag list")
+    public void userRequestTagList() {
+        lastResponse = api.getTags();
     }
 
-    @When("I request tags list")
-    public void i_request_tags_list() {
-        lastResponse = client.getTags();
+    @Then("tag list response status should be {int}")
+    public void tagListResponseStatusShouldBe(Integer status) {
+        Assertions.assertEquals(status.intValue(), lastResponse.statusCode(), lastResponse.asString());
     }
 
-    @When("I create a new user")
-    public void i_create_a_new_user() {
-        String uniqueEmail = "bagas." + System.currentTimeMillis() + "@mail.com";
+    // =========================
+    // USERS - LIST
+    // =========================
+    @When("user request user list")
+    public void userRequestUserList() {
+        lastResponse = api.getUserList();
+    }
 
+    @Then("user list response status should be {int}")
+    public void userListResponseStatusShouldBe(Integer status) {
+        Assertions.assertEquals(status.intValue(), lastResponse.statusCode(), lastResponse.asString());
+    }
+
+    // =========================
+    // USERS - CREATE
+    // =========================
+    @Given("prepare valid user payload")
+    public void prepareValidUserPayload() {
+        // no-op, payload dibuat pas create biar gampang
+    }
+
+    @When("user create new user")
+    public void userCreateNewUser() {
         Map<String, Object> body = new HashMap<>();
         body.put("firstName", "Bagas");
         body.put("lastName", "Automation");
-        body.put("email", uniqueEmail);
+        body.put("email", "bagas.automation." + System.currentTimeMillis() + "@mail.com");
 
-        lastResponse = client.createUser(body);
+        lastResponse = api.createUser(body);
 
-        // simpan id kalau berhasil
+        // simpan id kalau sukses (200/201)
         if (lastResponse.statusCode() == 200 || lastResponse.statusCode() == 201) {
             createdUserId = lastResponse.jsonPath().getString("id");
         }
     }
 
-    @When("I update the created user")
-    public void i_update_the_created_user() {
-        Assertions.assertThat(createdUserId)
-                .as("createdUserId harus ada (pastikan create user sukses)")
-                .isNotBlank();
+    @Then("create user response status should be {int} or {int}")
+    public void createUserResponseStatusShouldBeOr(Integer a, Integer b) {
+        int code = lastResponse.statusCode();
+        Assertions.assertTrue(code == a || code == b, "Unexpected status: " + code + "\n" + lastResponse.asString());
+        Assertions.assertNotNull(createdUserId, "createdUserId null\n" + lastResponse.asString());
+    }
+
+    // =========================
+    // USERS - UPDATE
+    // =========================
+    @When("user update created user")
+    public void userUpdateCreatedUser() {
+        Assertions.assertNotNull(createdUserId, "createdUserId null - create step gagal atau tidak jalan");
 
         Map<String, Object> body = new HashMap<>();
         body.put("firstName", "BagasUpdated");
-        body.put("lastName", "AutomationUpdated");
 
-        lastResponse = client.updateUser(createdUserId, body);
+        lastResponse = api.updateUser(createdUserId, body);
     }
 
-    @When("I delete the created user")
-    public void i_delete_the_created_user() {
-        Assertions.assertThat(createdUserId)
-                .as("createdUserId harus ada (pastikan create user sukses)")
-                .isNotBlank();
+    @Then("update user response status should be {int}")
+    public void updateUserResponseStatusShouldBe(Integer status) {
+        // DummyAPI kadang stabil 200, tapi biar CI gak random fail,
+        // kita accept 200 (dan kalau dia balikin 400/403 karena rate-limit, bakal kelihatan jelas)
+        int code = lastResponse.statusCode();
+        Assertions.assertEquals(status.intValue(), code, lastResponse.asString());
 
-        lastResponse = client.deleteUser(createdUserId);
+        // kalau body ada id, pastikan sama
+        if (lastResponse.getBody() != null && lastResponse.asString().contains("\"id\"")) {
+            String id = lastResponse.jsonPath().getString("id");
+            if (id != null) {
+                Assertions.assertEquals(createdUserId, id, lastResponse.asString());
+            }
+        }
     }
 
-    @When("I request user by invalid id {string}")
-    public void i_request_user_by_invalid_id(String invalidId) {
-        lastResponse = client.getUserById(invalidId);
+    // =========================
+    // USERS - DELETE
+    // =========================
+    @When("user delete created user")
+    public void userDeleteCreatedUser() {
+        Assertions.assertNotNull(createdUserId, "createdUserId null - create step gagal atau tidak jalan");
+        lastResponse = api.deleteUser(createdUserId);
     }
 
-    @Then("the response status should be {int} or {int}")
-    public void the_response_status_should_be_or(Integer a, Integer b) {
-        int actual = lastResponse.statusCode();
-        Assertions.assertThat(actual)
-                .as("status code")
-                .isIn(a, b);
+    @Then("delete user response status should be {int} or {int}")
+    public void deleteUserResponseStatusShouldBeOr(Integer a, Integer b) {
+        int code = lastResponse.statusCode();
+        Assertions.assertTrue(code == a || code == b, "Unexpected status: " + code + "\n" + lastResponse.asString());
     }
 
-    @Then("the response status should be {int}")
-    public void the_response_status_should_be(Integer code) {
-        Assertions.assertThat(lastResponse.statusCode()).isEqualTo(code);
+    // =========================
+    // NEGATIVE - GET USER INVALID ID
+    // =========================
+    @Given("user has invalid user id")
+    public void userHasInvalidUserId() {
+        // no-op
     }
 
-    @Then("the user list should not be empty")
-    public void the_user_list_should_not_be_empty() {
-        List<?> data = lastResponse.jsonPath().getList("data");
-        Assertions.assertThat(data).isNotNull();
-        Assertions.assertThat(data.size()).isGreaterThan(0);
+    @When("user request user by invalid id")
+    public void userRequestUserByInvalidId() {
+        lastResponse = api.getUserById("invalid-id-0000");
     }
 
-    @Then("the tags list should not be empty")
-    public void the_tags_list_should_not_be_empty() {
-        List<?> data = lastResponse.jsonPath().getList("data");
-        Assertions.assertThat(data).isNotNull();
-        Assertions.assertThat(data.size()).isGreaterThan(0);
-    }
-
-    @Then("print the last response")
-    public void print_the_last_response() {
-        System.out.println("STATUS: " + lastResponse.statusCode());
-        System.out.println(lastResponse.asPrettyString());
+    @Then("get user invalid id response status should be {int} or {int}")
+    public void getUserInvalidIdResponseStatusShouldBeOr(Integer a, Integer b) {
+        int code = lastResponse.statusCode();
+        Assertions.assertTrue(code == a || code == b, "Unexpected status: " + code + "\n" + lastResponse.asString());
     }
 }

@@ -2,46 +2,75 @@ plugins {
     id 'java'
 }
 
+group = 'com.bagas'
+version = '1.0-SNAPSHOT'
+
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation platform("io.cucumber:cucumber-bom:7.18.1")
-    testImplementation "io.cucumber:cucumber-java"
-    testImplementation "io.cucumber:cucumber-junit-platform-engine"
-
-    testImplementation "org.junit.platform:junit-platform-suite:1.10.2"
-
-
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.2"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.2"
-
-    testImplementation "io.rest-assured:rest-assured:5.4.0"
-    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.17.2"
-
-    testImplementation "org.seleniumhq.selenium:selenium-java:4.23.0"
-    testImplementation "io.github.bonigarcia:webdrivermanager:5.9.2"
-
-    testImplementation "org.assertj:assertj-core:3.26.3"
-}
-
-test {
-    useJUnitPlatform()
-}
-
-tasks.register('apiTest', Test) {
-    useJUnitPlatform()
-    include("**/ApiTestRunner.class")
-    testLogging {
-        events "passed", "failed", "skipped"
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
-tasks.register('webTest', Test) {
+dependencies {
+    // ===== JUnit 5 + JUnit Platform Suite (WAJIB) =====
+    testImplementation platform("org.junit:junit-bom:5.10.2")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    testImplementation "org.junit.platform:junit-platform-suite:1.10.2"
+
+    // ===== Cucumber JUnit Platform Engine =====
+    testImplementation "io.cucumber:cucumber-java:7.16.1"
+    testImplementation "io.cucumber:cucumber-junit-platform-engine:7.16.1"
+
+    // ===== REST Assured =====
+    testImplementation "io.rest-assured:rest-assured:5.4.0"
+    testImplementation "io.rest-assured:json-path:5.4.0"
+
+    // ===== Selenium =====
+    testImplementation "org.seleniumhq.selenium:selenium-java:4.18.1"
+    testImplementation "io.github.bonigarcia:webdrivermanager:5.6.3"
+}
+
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
-    include("**/WebTestRunner.class")
+}
+
+tasks.register("apiTest", Test) {
+    useJUnitPlatform()
+    include "**/ApiTestRunner.class"
+
+    // Report Cucumber HTML + JSON
+    systemProperty "cucumber.plugin",
+            "pretty," +
+                    "html:build/reports/cucumber/api.html," +
+                    "json:build/reports/cucumber/api.json"
+
     testLogging {
-        events "passed", "failed", "skipped"
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+        showStandardStreams true
+    }
+}
+
+tasks.register("webTest", Test) {
+    useJUnitPlatform()
+    include "**/WebTestRunner.class"
+
+    // headless default true (buat CI aman)
+    environment "HEADLESS", System.getenv("HEADLESS") ?: "true"
+
+    systemProperty "cucumber.plugin",
+            "pretty," +
+                    "html:build/reports/cucumber/web.html," +
+                    "json:build/reports/cucumber/web.json"
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+        showStandardStreams true
     }
 }

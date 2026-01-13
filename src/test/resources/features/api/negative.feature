@@ -1,7 +1,7 @@
-@api @negative
+@api
 Feature: Dummy API Negative Tests
 
   Scenario: Get user by invalid id should return 400 or 404
-    When I request user by invalid id "INVALID_ID_123"
-    Then the response status should be 400 or 404
-    And print the last response
+    Given user has invalid user id
+    When user request user by invalid id
+    Then get user invalid id response status should be 400 or 404
