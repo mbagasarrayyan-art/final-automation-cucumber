@@ -1,4 +1,4 @@
-name: CI - Web & API Automation
+name: CI
 
 on:
   workflow_dispatch:
@@ -11,32 +11,41 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      HEADLESS: "true"
+      # kalau lo bikin secret APP_ID, dia kepake. kalau nggak ada, client fallback ke default.
+      APP_ID: ${{ secrets.APP_ID }}
+
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
+          cache: gradle
 
-      - name: Grant execute permission for gradlew
+      - name: Grant execute permission
         run: chmod +x gradlew
 
       - name: Run API Tests
         run: ./gradlew clean apiTest
 
-      - name: Run Web Tests (Headless)
-        env:
-          HEADLESS: "true"
+      - name: Run Web Tests
         run: ./gradlew webTest
 
-      - name: Upload Test Reports (Gradle + Cucumber)
+      - name: Upload Gradle Test Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports
-          path: |
-            build/reports
-            build/test-results
+          name: gradle-test-reports
+          path: build/reports/tests
+
+      - name: Upload Cucumber Reports (HTML + JSON)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-reports
+          path: build/reports/cucumber
