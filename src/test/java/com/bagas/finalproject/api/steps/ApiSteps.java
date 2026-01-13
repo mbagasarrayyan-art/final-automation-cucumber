@@ -17,9 +17,7 @@ public class ApiSteps {
     private Response lastResponse;
     private String createdUserId;
 
-    // =========================
-    // TAGS
-    // =========================
+
     @When("user request tag list")
     public void userRequestTagList() {
         lastResponse = api.getTags();
@@ -30,9 +28,7 @@ public class ApiSteps {
         Assertions.assertEquals(status.intValue(), lastResponse.statusCode(), lastResponse.asString());
     }
 
-    // =========================
-    // USERS - LIST
-    // =========================
+
     @When("user request user list")
     public void userRequestUserList() {
         lastResponse = api.getUserList();
@@ -43,12 +39,10 @@ public class ApiSteps {
         Assertions.assertEquals(status.intValue(), lastResponse.statusCode(), lastResponse.asString());
     }
 
-    // =========================
-    // USERS - CREATE
-    // =========================
+
     @Given("prepare valid user payload")
     public void prepareValidUserPayload() {
-        // no-op, payload dibuat pas create biar gampang
+
     }
 
     @When("user create new user")
@@ -60,7 +54,7 @@ public class ApiSteps {
 
         lastResponse = api.createUser(body);
 
-        // simpan id kalau sukses (200/201)
+
         if (lastResponse.statusCode() == 200 || lastResponse.statusCode() == 201) {
             createdUserId = lastResponse.jsonPath().getString("id");
         }
@@ -73,9 +67,7 @@ public class ApiSteps {
         Assertions.assertNotNull(createdUserId, "createdUserId null\n" + lastResponse.asString());
     }
 
-    // =========================
-    // USERS - UPDATE
-    // =========================
+
     @When("user update created user")
     public void userUpdateCreatedUser() {
         Assertions.assertNotNull(createdUserId, "createdUserId null - create step gagal atau tidak jalan");
@@ -88,12 +80,11 @@ public class ApiSteps {
 
     @Then("update user response status should be {int}")
     public void updateUserResponseStatusShouldBe(Integer status) {
-        // DummyAPI kadang stabil 200, tapi biar CI gak random fail,
-        // kita accept 200 (dan kalau dia balikin 400/403 karena rate-limit, bakal kelihatan jelas)
+
         int code = lastResponse.statusCode();
         Assertions.assertEquals(status.intValue(), code, lastResponse.asString());
 
-        // kalau body ada id, pastikan sama
+
         if (lastResponse.getBody() != null && lastResponse.asString().contains("\"id\"")) {
             String id = lastResponse.jsonPath().getString("id");
             if (id != null) {
@@ -102,9 +93,7 @@ public class ApiSteps {
         }
     }
 
-    // =========================
-    // USERS - DELETE
-    // =========================
+
     @When("user delete created user")
     public void userDeleteCreatedUser() {
         Assertions.assertNotNull(createdUserId, "createdUserId null - create step gagal atau tidak jalan");
@@ -117,12 +106,10 @@ public class ApiSteps {
         Assertions.assertTrue(code == a || code == b, "Unexpected status: " + code + "\n" + lastResponse.asString());
     }
 
-    // =========================
-    // NEGATIVE - GET USER INVALID ID
-    // =========================
+
     @Given("user has invalid user id")
     public void userHasInvalidUserId() {
-        // no-op
+
     }
 
     @When("user request user by invalid id")

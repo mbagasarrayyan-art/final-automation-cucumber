@@ -19,7 +19,7 @@ public class WebSteps {
 
     @Given("user is on SauceDemo login page")
     public void userIsOnLoginPage() {
-        // ✅ ambil driver setelah @Before hook jalan
+
         driver = Hooks.driver;
         Assertions.assertNotNull(driver, "Driver null. Hooks @Before belum jalan / tag @web tidak kebaca.");
 

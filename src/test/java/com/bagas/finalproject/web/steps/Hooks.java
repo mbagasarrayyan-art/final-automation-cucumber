@@ -20,9 +20,7 @@ public class Hooks {
 
         ChromeOptions options = new ChromeOptions();
 
-        // =========================
-        // Disable Chrome password manager + data breach popup
-        // =========================
+
         Map<String, Object> prefs = new HashMap<>();
         prefs.put("credentials_enable_service", false);
         prefs.put("profile.password_manager_enabled", false);
@@ -33,22 +31,22 @@ public class Hooks {
 
         options.setExperimentalOption("prefs", prefs);
 
-        // Matikan "Chrome is being controlled..." banner (opsional)
+
         options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
         options.setExperimentalOption("useAutomationExtension", false);
 
-        // Headless di CI (GitHub Actions) biar stabil
+
         String headless = System.getenv("HEADLESS");
         if (headless != null && headless.equalsIgnoreCase("true")) {
             options.addArguments("--headless=new");
             options.addArguments("--window-size=1366,768");
         }
 
-        // anti crash di CI
+
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
 
-        // Optional stability flags
+
         options.addArguments("--disable-notifications");
         options.addArguments("--disable-popup-blocking");
 

@@ -31,12 +31,7 @@ public class WaitUtils {
         return !driver.findElements(locator).isEmpty();
     }
 
-    /**
-     * Click yang tahan banting untuk headless:
-     * - tunggu clickable
-     * - coba click biasa
-     * - kalau ke-intercept / stale, scroll + JS click fallback
-     */
+
     public void click(By locator) {
         WebElement el = clickable(locator);
 
@@ -49,7 +44,7 @@ public class WaitUtils {
                 );
             } catch (Exception ignored) {}
 
-            // re-find element biar gak stale
+
             el = clickable(locator);
 
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", el);
