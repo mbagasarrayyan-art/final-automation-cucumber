@@ -22,7 +22,7 @@ public class InventoryPage {
 
     public boolean isLoaded() {
         try {
-            wait.visible(inventoryContainer); // ✅ nunggu beneran tampil
+            wait.visible(inventoryContainer); 
             return true;
         } catch (TimeoutException e) {
             return false;
@@ -31,7 +31,7 @@ public class InventoryPage {
 
     public void addBackpackToCart() {
         wait.click(addBackpackBtn);
-        // ✅ pastiin add berhasil: badge muncul dan ada text "1"
+       
         wait.visible(cartBadge);
         wait.waitText(cartBadge, "1");
     }
