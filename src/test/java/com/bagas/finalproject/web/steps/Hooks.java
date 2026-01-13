@@ -25,7 +25,7 @@ public class Hooks {
         prefs.put("credentials_enable_service", false);
         prefs.put("profile.password_manager_enabled", false);
 
-        // Extra: block leak detection / password check UI (varies by Chrome version)
+        
         prefs.put("profile.password_manager_leak_detection", false);
         prefs.put("safebrowsing.enabled", true); // tetap aman, tapi popup password manager off
 
