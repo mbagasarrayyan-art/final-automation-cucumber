@@ -3,7 +3,6 @@ name: CI
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ "main" ]
   push:
     branches: [ "main" ]
 
@@ -11,41 +10,35 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    env:
-      HEADLESS: "true"
-      # kalau lo bikin secret APP_ID, dia kepake. kalau nggak ada, client fallback ke default.
-      APP_ID: ${{ secrets.APP_ID }}
-
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Java 17
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: '17'
           cache: gradle
 
-      - name: Grant execute permission
-        run: chmod +x gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
 
       - name: Run API Tests
+        env:
+          APP_ID: 63a804408eb0cb069b57e43a
         run: ./gradlew clean apiTest
 
-      - name: Run Web Tests
-        run: ./gradlew webTest
+      - name: Run Web Tests (Xvfb)
+        run: xvfb-run -a ./gradlew clean webTest
 
-      - name: Upload Gradle Test Reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: gradle-test-reports
-          path: build/reports/tests
-
-      - name: Upload Cucumber Reports (HTML + JSON)
+      - name: Upload Cucumber Reports (HTML & JSON)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-reports
-          path: build/reports/cucumber
+          path: |
+            build/reports/cucumber/*.html
+            build/reports/cucumber/*.json
+            build/reports/tests/**/*
+          if-no-files-found: warn
