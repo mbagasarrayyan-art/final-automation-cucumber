@@ -16,21 +16,21 @@ java {
 }
 
 dependencies {
-    // ===== JUnit 5 + JUnit Platform Suite (WAJIB) =====
+    
     testImplementation platform("org.junit:junit-bom:5.10.2")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
     testImplementation "org.junit.platform:junit-platform-suite:1.10.2"
 
-    // ===== Cucumber JUnit Platform Engine =====
+    
     testImplementation "io.cucumber:cucumber-java:7.16.1"
     testImplementation "io.cucumber:cucumber-junit-platform-engine:7.16.1"
 
-    // ===== REST Assured =====
+    
     testImplementation "io.rest-assured:rest-assured:5.4.0"
     testImplementation "io.rest-assured:json-path:5.4.0"
 
-    // ===== Selenium =====
+    
     testImplementation "org.seleniumhq.selenium:selenium-java:4.18.1"
     testImplementation "io.github.bonigarcia:webdrivermanager:5.6.3"
 }
@@ -43,7 +43,7 @@ tasks.register("apiTest", Test) {
     useJUnitPlatform()
     include "**/ApiTestRunner.class"
 
-    // Report Cucumber HTML + JSON
+    
     systemProperty "cucumber.plugin",
             "pretty," +
                     "html:build/reports/cucumber/api.html," +
@@ -60,7 +60,7 @@ tasks.register("webTest", Test) {
     useJUnitPlatform()
     include "**/WebTestRunner.class"
 
-    // headless default true (buat CI aman)
+    
     environment "HEADLESS", System.getenv("HEADLESS") ?: "true"
 
     systemProperty "cucumber.plugin",
