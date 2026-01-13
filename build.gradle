@@ -16,85 +16,54 @@ java {
 }
 
 dependencies {
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> 6fd6c33 (chore: remove unnecessary comments)
+    // JUnit 5
     testImplementation platform("org.junit:junit-bom:5.10.2")
     testImplementation "org.junit.jupiter:junit-jupiter"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+
+    // Cucumber (JUnit Platform Engine)
+    testImplementation "io.cucumber:cucumber-java:7.14.0"
+    testImplementation "io.cucumber:cucumber-junit-platform-engine:7.14.0"
+
+
+
     testImplementation "org.junit.platform:junit-platform-suite:1.10.2"
 
-<<<<<<< HEAD
-    
-    testImplementation "io.cucumber:cucumber-java:7.16.1"
-    testImplementation "io.cucumber:cucumber-junit-platform-engine:7.16.1"
-
-    
-    testImplementation "io.rest-assured:rest-assured:5.4.0"
-    testImplementation "io.rest-assured:json-path:5.4.0"
-
-    
-=======
-
-    testImplementation "io.cucumber:cucumber-java:7.16.1"
-    testImplementation "io.cucumber:cucumber-junit-platform-engine:7.16.1"
-
-
-    testImplementation "io.rest-assured:rest-assured:5.4.0"
-    testImplementation "io.rest-assured:json-path:5.4.0"
-
-
->>>>>>> 6fd6c33 (chore: remove unnecessary comments)
+    // Selenium + WebDriverManager
     testImplementation "org.seleniumhq.selenium:selenium-java:4.18.1"
-    testImplementation "io.github.bonigarcia:webdrivermanager:5.6.3"
+    testImplementation "io.github.bonigarcia:webdrivermanager:5.7.0"
+
+    // Rest Assured
+    testImplementation "io.rest-assured:rest-assured:5.4.0"
+
+    // Assertion
+    testImplementation "org.hamcrest:hamcrest:2.2"
 }
 
-tasks.withType(Test).configureEach {
+test {
     useJUnitPlatform()
 }
+
 
 tasks.register("apiTest", Test) {
     useJUnitPlatform()
-    include "**/ApiTestRunner.class"
 
-<<<<<<< HEAD
-    
-=======
+    systemProperty "cucumber.filter.tags", "@api"
 
->>>>>>> 6fd6c33 (chore: remove unnecessary comments)
     systemProperty "cucumber.plugin",
-            "pretty," +
-                    "html:build/reports/cucumber/api.html," +
-                    "json:build/reports/cucumber/api.json"
-
+            "pretty, html:build/reports/cucumber/api.html, json:build/reports/cucumber/api.json"
     testLogging {
         events "passed", "skipped", "failed"
-        exceptionFormat "full"
-        showStandardStreams true
     }
 }
 
+
 tasks.register("webTest", Test) {
     useJUnitPlatform()
-    include "**/WebTestRunner.class"
-
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> 6fd6c33 (chore: remove unnecessary comments)
-    environment "HEADLESS", System.getenv("HEADLESS") ?: "true"
-
+    systemProperty "cucumber.filter.tags", "@web"
     systemProperty "cucumber.plugin",
-            "pretty," +
-                    "html:build/reports/cucumber/web.html," +
-                    "json:build/reports/cucumber/web.json"
-
+            "pretty, html:build/reports/cucumber/web.html, json:build/reports/cucumber/web.json"
     testLogging {
         events "passed", "skipped", "failed"
-        exceptionFormat "full"
-        showStandardStreams true
     }
 }
