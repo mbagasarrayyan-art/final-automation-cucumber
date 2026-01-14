@@ -59,8 +59,12 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Check Chrome Version
-        run: google-chrome --version || chromium-browser --version || true
+      
+      - name: Install Google Chrome Stable
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable || true
+          google-chrome --version || true
 
       - name: Run Web Tests
         run: ./gradlew clean webTest
