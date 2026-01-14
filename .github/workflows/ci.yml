@@ -7,6 +7,8 @@ on:
 jobs:
   api:
     runs-on: ubuntu-latest
+    env:
+      APP_ID: "63a804408eb0cb069b57e43a"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,15 +19,27 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       - name: Run API Tests
         run: ./gradlew clean apiTest
 
-      - name: Upload API Test Report (JUnit)
+      - name: Upload API JUnit Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: api-test-report
+          name: api-junit-report
           path: build/reports/tests/apiTest
+
+      - name: Upload API Cucumber Report (HTML+JSON)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-cucumber-report
+          path: |
+            build/reports/cucumber/api-cucumber.html
+            build/reports/cucumber/api-cucumber.json
 
   web:
     runs-on: ubuntu-latest
@@ -42,16 +56,27 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      # Chrome sudah ada di ubuntu-latest biasanya, tapi step ini bikin lebih stabil
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       - name: Check Chrome Version
         run: google-chrome --version || chromium-browser --version || true
 
       - name: Run Web Tests
         run: ./gradlew clean webTest
 
-      - name: Upload Web Test Report (JUnit)
+      - name: Upload Web JUnit Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: web-test-report
+          name: web-junit-report
           path: build/reports/tests/webTest
+
+      - name: Upload Web Cucumber Report (HTML+JSON)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-cucumber-report
+          path: |
+            build/reports/cucumber/web-cucumber.html
+            build/reports/cucumber/web-cucumber.json
