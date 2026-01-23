@@ -16,6 +16,7 @@ dependencies {
     // Cucumber (JUnit Platform Engine)
     testImplementation "io.cucumber:cucumber-java:7.18.1"
     testImplementation "io.cucumber:cucumber-junit-platform-engine:7.18.1"
+    testImplementation "io.cucumber:cucumber-core:7.18.1"
 
     // JUnit Platform Suite API (buat @Suite, @SelectClasspathResource, dll)
     testImplementation "org.junit.platform:junit-platform-suite:1.10.2"
@@ -54,6 +55,7 @@ tasks.register('apiTest', Test) {
     classpath = sourceSets.test.runtimeClasspath
     useJUnitPlatform()
 
+    systemProperty "cucumber.plugin", "json:build/reports/cucumber/api-report.json,html:build/reports/cucumber/api-report.html"
 
     setTestNameIncludePatterns([
             "com.bagas.finalproject.api.runner.ApiTestRunner"
@@ -74,6 +76,7 @@ tasks.register('webTest', Test) {
     classpath = sourceSets.test.runtimeClasspath
     useJUnitPlatform()
 
+    systemProperty "cucumber.plugin", "json:build/reports/cucumber/web-report.json,html:build/reports/cucumber/web-report.html"
 
     setTestNameIncludePatterns([
             "com.bagas.finalproject.web.runner.WebTestRunner"
